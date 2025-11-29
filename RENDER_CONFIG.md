@@ -36,14 +36,21 @@ ADMIN_PASSWORD=<tu-contraseña-segura>
 ## Comandos
 
 ### Build Command
+```bash
+pip install --upgrade pip && pip install -r requirements.txt
 ```
-pip install -r requirements.txt
+
+**Alternativa si falla psycopg2**: Si sigue fallando, usa este comando más completo:
+```bash
+apt-get update && apt-get install -y libpq-dev gcc || true && pip install --upgrade pip && pip install -r requirements.txt
 ```
 
 ### Start Command
 ```
-gunicorn campus_forum.wsgi:application --bind 0.0.0.0:$PORT
+gunicorn campus_forum.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120
 ```
+
+**IMPORTANTE**: Asegúrate de que el comando NO esté duplicado en Render. Debe ser exactamente una sola línea.
 
 ## Pre-Deploy Command (Opcional)
 Si quieres ejecutar migraciones automáticamente antes de cada deploy:
