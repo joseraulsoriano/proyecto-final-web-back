@@ -29,6 +29,18 @@ urlpatterns = [
     path('api/analytics/', include('analytics.urls')),
 ]
 
-# Servir archivos de media en desarrollo
+# Servir archivos de media
+# En producción, Render puede servir archivos estáticos, pero para media necesitamos esto
+# NOTA: Para producción real, considera usar S3 o similar para archivos de media
+from django.views.static import serve
+from django.conf.urls.static import static
+
 if settings.DEBUG:
+    # En desarrollo, usar el método estándar
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+else:
+    # En producción, servir archivos de media manualmente
+    # Esto es temporal - para producción real usa S3 o similar
+    urlpatterns += [
+        path('media/<path:path>', serve, {'document_root': settings.MEDIA_ROOT}),
+    ]
