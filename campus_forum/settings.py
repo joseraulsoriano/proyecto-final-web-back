@@ -15,7 +15,8 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-pt3(i$!tmc^%gi0hz32@m)%5=o
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',') if os.getenv('ALLOWED_HOSTS') else []
+# ALLOWED_HOSTS - Render usa *.onrender.com por defecto
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',') if os.getenv('ALLOWED_HOSTS') else ['*']
 
 # Application definition
 
@@ -119,8 +120,15 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS
-CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:4200').split(',')
+# CORS - Permitir peticiones desde el frontend
+cors_origins = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:4200,https://proyecto-final-web-alpha.vercel.app')
+CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins.split(',') if origin.strip()]
+
+# También permitir cualquier origen en desarrollo (quitar en producción)
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    CORS_ALLOW_ALL_ORIGINS = False
 
 # REST Framework
 REST_FRAMEWORK = {
