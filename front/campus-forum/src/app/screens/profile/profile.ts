@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth';
 import { User, UpdateProfileRequest } from '../../shared/interfaces/user.interface';
+import { getApiBaseUrl } from '../../core/config/app.config';
 
 @Component({
   selector: 'app-profile',
@@ -56,9 +57,8 @@ export class ProfileComponent implements OnInit {
       return url;
     }
     // Si es una ruta relativa, construir la URL completa con el backend
-    // El backend ahora devuelve URLs absolutas, pero por si acaso mantenemos este fallback
-    const apiBaseUrl = 'http://localhost:8001/api';
-    const baseUrl = apiBaseUrl.replace('/api', '');
+    const apiUrl = getApiBaseUrl().replace('/api', '');
+    return `${apiUrl}${url.startsWith('/') ? url : '/' + url}`;
     return `${baseUrl}${url.startsWith('/') ? url : '/' + url}`;
   }
 
