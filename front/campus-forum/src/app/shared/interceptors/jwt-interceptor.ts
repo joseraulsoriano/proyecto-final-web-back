@@ -30,7 +30,12 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
 
   const isAuthRoute = authRoutes.some(route => req.url.includes(route));
   const isProtectedRoute = protectedRoutes.some(route => req.url.includes(route));
-  const isPublicReadRoute = req.method === 'GET' && publicReadRoutes.some(route => req.url.includes(route)) && !isProtectedRoute;
+  
+  // Las rutas de escritura (POST, PUT, PATCH, DELETE) a /api/posts/posts/ siempre requieren autenticación
+  const isWriteOperation = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method);
+  const isPostsWriteRoute = isWriteOperation && req.url.includes('/api/posts/posts/');
+  
+  const isPublicReadRoute = req.method === 'GET' && publicReadRoutes.some(route => req.url.includes(route)) && !isProtectedRoute && !isPostsWriteRoute;
 
   // Para rutas públicas o de autenticación, NO hacer nada (no enviar token, no limpiar)
   if (isAuthRoute || isPublicReadRoute) {
