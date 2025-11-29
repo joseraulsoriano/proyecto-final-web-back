@@ -139,7 +139,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS - Permitir peticiones desde el frontend
 cors_origins = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:4200,https://proyecto-final-web-alpha.vercel.app')
-CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins.split(',') if origin.strip()]
+# Limpiar URLs: remover barras finales y espacios
+CORS_ALLOWED_ORIGINS = [
+    origin.strip().rstrip('/')  # Remover espacios y barras finales
+    for origin in cors_origins.split(',')
+    if origin.strip()
+]
 
 # También permitir cualquier origen en desarrollo (quitar en producción)
 if DEBUG:
