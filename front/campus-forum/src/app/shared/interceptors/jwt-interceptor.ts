@@ -14,13 +14,23 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   ];
 
   // Rutas de lectura pública que no requieren token (solo GET)
+  // Excluir rutas protegidas como my-posts, me, etc.
   const publicReadRoutes = [
     '/api/categories',
     '/api/posts/' // Incluye /api/posts/ y /api/posts/?...
   ];
+  
+  // Rutas protegidas que SIEMPRE requieren autenticación (aunque sean GET)
+  const protectedRoutes = [
+    '/api/posts/posts/my-posts',
+    '/api/posts/my-posts',
+    '/api/users/me',
+    '/api/users/me/'
+  ];
 
   const isAuthRoute = authRoutes.some(route => req.url.includes(route));
-  const isPublicReadRoute = req.method === 'GET' && publicReadRoutes.some(route => req.url.includes(route));
+  const isProtectedRoute = protectedRoutes.some(route => req.url.includes(route));
+  const isPublicReadRoute = req.method === 'GET' && publicReadRoutes.some(route => req.url.includes(route)) && !isProtectedRoute;
 
   // Para rutas públicas o de autenticación, NO hacer nada (no enviar token, no limpiar)
   if (isAuthRoute || isPublicReadRoute) {
