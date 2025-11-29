@@ -43,12 +43,15 @@ class UserSerializer(serializers.ModelSerializer):
             request = self.context.get('request')
             if request:
                 # Construir URL absoluta usando el request
+                # request.build_absolute_uri() construye la URL completa con el dominio del servidor
                 return request.build_absolute_uri(obj.profile_picture.url)
-            # Si no hay request, construir URL manualmente (fallback)
-            # Usar el nombre del archivo directamente
+            # Si no hay request (fallback), usar el dominio del servidor desde settings
+            # En producción, esto debería estar configurado en ALLOWED_HOSTS
             if hasattr(obj.profile_picture, 'url'):
-                return f"http://localhost:8001{obj.profile_picture.url}"
-            return f"http://localhost:8001{settings.MEDIA_URL}{obj.profile_picture}"
+                # Obtener el dominio del servidor desde settings o usar el host del request
+                base_url = getattr(settings, 'BASE_URL', 'http://localhost:8001')
+                return f"{base_url}{obj.profile_picture.url}"
+            return None
         return None
 
 
