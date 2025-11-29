@@ -73,14 +73,31 @@ TEMPLATES = [
 WSGI_APPLICATION = 'campus_forum.wsgi.application'
 
 # Database - PostgreSQL
+# En Render, las variables de entorno vienen del servicio PostgreSQL
+# Si no están definidas, no usar valores por defecto (fallará intencionalmente)
+DB_NAME = os.getenv('DB_NAME')
+DB_USER = os.getenv('DB_USER')
+DB_PASSWORD = os.getenv('DB_PASSWORD')
+DB_HOST = os.getenv('DB_HOST')
+DB_PORT = os.getenv('DB_PORT', '5432')
+
+if not all([DB_NAME, DB_USER, DB_PASSWORD, DB_HOST]):
+    raise ValueError(
+        "Las variables de entorno de la base de datos no están configuradas. "
+        "Asegúrate de configurar: DB_NAME, DB_USER, DB_PASSWORD, DB_HOST"
+    )
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'campus_forum_db'),
-        'USER': os.getenv('DB_USER', 'campus_forum_user'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'campus_forum_pass'),
-        'HOST': os.getenv('DB_HOST', 'db'),
-        'PORT': os.getenv('DB_PORT', '5432'),
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': DB_HOST,
+        'PORT': DB_PORT,
+        'OPTIONS': {
+            'connect_timeout': 10,
+        },
     }
 }
 
