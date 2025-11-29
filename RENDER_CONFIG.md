@@ -45,18 +45,25 @@ pip install --upgrade pip && pip install -r requirements.txt
 apt-get update && apt-get install -y libpq-dev gcc || true && pip install --upgrade pip && pip install -r requirements.txt
 ```
 
-### Start Command
+### Start Command (RECOMENDADO - con migraciones)
+**Usa este comando que ejecuta las migraciones antes de iniciar el servidor:**
+```bash
+python manage.py migrate --noinput && gunicorn campus_forum.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120
 ```
+
+**IMPORTANTE**: 
+- Asegúrate de que el comando NO esté duplicado en Render
+- Este comando ejecuta las migraciones automáticamente cada vez que se inicia el servicio
+- Si las migraciones fallan, el servicio no iniciará (esto es bueno para detectar problemas)
+
+### Start Command (Alternativa - sin migraciones automáticas)
+Si prefieres ejecutar las migraciones manualmente:
+```bash
 gunicorn campus_forum.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120
 ```
 
-**IMPORTANTE**: Asegúrate de que el comando NO esté duplicado en Render. Debe ser exactamente una sola línea.
-
-## Pre-Deploy Command (Opcional)
-Si quieres ejecutar migraciones automáticamente antes de cada deploy:
-```
-python manage.py migrate --noinput
-```
+## Pre-Deploy Command
+**NO uses Pre-Deploy Command para migraciones** - Las variables de entorno de la base de datos pueden no estar disponibles durante el Pre-Deploy. Usa el Start Command con migraciones en su lugar.
 
 ## Pasos Adicionales
 
