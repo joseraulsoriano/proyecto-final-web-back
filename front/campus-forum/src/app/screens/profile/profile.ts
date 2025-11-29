@@ -59,7 +59,6 @@ export class ProfileComponent implements OnInit {
     // Si es una ruta relativa, construir la URL completa con el backend
     const apiUrl = getApiBaseUrl().replace('/api', '');
     return `${apiUrl}${url.startsWith('/') ? url : '/' + url}`;
-    return `${baseUrl}${url.startsWith('/') ? url : '/' + url}`;
   }
 
   initForm(): void {
