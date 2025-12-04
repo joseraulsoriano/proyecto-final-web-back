@@ -23,10 +23,9 @@ class ReportViewSet(viewsets.ModelViewSet):
         if user.role in ['ADMIN', 'PROFESSOR']:
             status_filter = self.request.query_params.get('status')
             if status_filter:
+                # Si se especifica un filtro de status, aplicarlo
                 queryset = queryset.filter(status=status_filter)
-            else:
-                # Por defecto, mostrar pendientes y revisados
-                queryset = queryset.filter(status__in=['PENDING', 'REVIEWED'])
+            # Si no hay filtro, mostrar TODOS los reportes (sin filtrar por status)
         else:
             # Usuarios normales solo ven sus propios reportes
             queryset = queryset.filter(reported_by=user)
