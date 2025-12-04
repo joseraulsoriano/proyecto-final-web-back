@@ -47,15 +47,27 @@
 
           <div class="report-content">
             <div class="reported-content">
-              @if (report.type === 'POST' && report.post) {
-                <div class="content-preview">
-                  <strong>Post:</strong> {{ report.post.title }}
-                </div>
+              @if (report.type === 'POST') {
+                @if (report.post) {
+                  <div class="content-preview">
+                    <strong>Post:</strong> {{ report.post.title }}
+                  </div>
+                } @else {
+                  <div class="content-preview content-deleted">
+                    <strong>Post:</strong> <em>El contenido reportado ya no está disponible (fue eliminado)</em>
+                  </div>
+                }
               }
-              @if (report.type === 'COMMENT' && report.comment) {
-                <div class="content-preview">
-                  <strong>Comentario:</strong> {{ report.comment.content.substring(0, 100) }}...
-                </div>
+              @if (report.type === 'COMMENT') {
+                @if (report.comment) {
+                  <div class="content-preview">
+                    <strong>Comentario:</strong> {{ report.comment.content?.substring(0, 100) }}...
+                  </div>
+                } @else {
+                  <div class="content-preview content-deleted">
+                    <strong>Comentario:</strong> <em>El contenido reportado ya no está disponible (fue eliminado)</em>
+                  </div>
+                }
               }
             </div>
 

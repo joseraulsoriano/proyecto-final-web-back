@@ -112,6 +112,15 @@
 
       .content-preview {
         color: var(--text-secondary);
+        
+        &.content-deleted {
+          color: var(--text-muted);
+          font-style: italic;
+          
+          em {
+            color: var(--text-muted);
+          }
+        }
       }
     }
 
