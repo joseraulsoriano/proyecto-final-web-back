@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: campus_forum_db
+    environment:
+      POSTGRES_DB: ${DB_NAME:-campus_forum_db}
+      POSTGRES_USER: ${DB_USER:-campus_forum_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-campus_forum_pass}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-campus_forum_user} -d ${DB_NAME:-campus_forum_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - campus_forum_network
+
+  web:
+    build: .
+    container_name: campus_forum_api
+    command: python manage.py runserver 0.0.0.0:8001
+    volumes:
+      - .:/app
+    ports:
+      - "8001:8001"
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME:-campus_forum_db}
+      - DB_USER=${DB_USER:-campus_forum_user}
+      - DB_PASSWORD=${DB_PASSWORD:-campus_forum_pass}
+    networks:
+      - campus_forum_network
+
+volumes:
+  postgres_data:
+
+networks:
+  campus_forum_network:
+    driver: bridge
